@@ -17,3 +17,12 @@ In decision analysis, a decision tree and the closely related influence diagram 
 Decision trees are commonly used in operations research and operations management. If, in practice, decisions have to be taken online with no recall under incomplete knowledge, a decision tree should be paralleled by a probability model as a best choice model or online selection model algorithm. Another use of decision trees is as a descriptive means for calculating conditional probabilities.
 
 Decision trees, influence diagrams, utility functions, and other decision analysis tools and methods are taught to undergraduate students in schools of business, health economics, and public health, and are examples of operations research or management science methods.
+
+
+## Feedback
+
+- If you think this repo is useful, consider giving it a star.
+- If something is not working, [create an
+  issue](https://github.com/Sha-Kumar/Decision_Tree_Generator/issues/new).
+
+### Created & Maintained By [rustiever](https://github.com/rustiever) and [Sha-Kumar](https://github.com/Sha-Kumar)
