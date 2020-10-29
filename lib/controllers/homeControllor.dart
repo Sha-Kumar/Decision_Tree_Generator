@@ -6,30 +6,40 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  RxList data = [].obs;
+  RxList cols = <dynamic>[].obs;
+  RxList<List<dynamic>> rows = <List<dynamic>>[].obs;
 
-  Future<void> loadFile(mydata) async {
+  Future<void> loadFile(String mydata) async {
     // final mydata = await rootBundle.loadString("assets/baseball.csv");
-    List<List<dynamic>> csvTable = CsvToListConverter().convert(mydata);
-    data.value = csvTable;
-    // print(data[0]);
+    final List<List<dynamic>> csvTable = const CsvToListConverter(
+      eol: "\n",
+    ).convert(mydata);
+    cols.value = csvTable.first;
+    csvTable.removeAt(0);
+    rows.value = csvTable;
+    print(csvTable);
   }
 
   Future<void> openFileExplorer() async {
     try {
-      FilePickerResult res = await FilePicker.platform.pickFiles(
+      final FilePickerResult res = await FilePicker.platform.pickFiles(
           type: FileType.custom,
           onFileLoading: (c) {
             print(c.index);
           },
           allowedExtensions: ['csv'],
           withData: true);
-      var fg = res.files[0].bytes;
+      final fg = res.files[0].bytes;
+      final asc = ascii.decode(fg);
+      if (asc.contains("\n")) {
+        print(asc.indexOf("\n"));
+      }
       // print(String.fromCharCodes(fg));
       loadFile(ascii.decode(fg));
+
       // print(utf8.decode(fg));
     } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
+      print("Unsupported operation$e");
     } catch (ex) {
       print(ex);
     }

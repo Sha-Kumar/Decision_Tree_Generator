@@ -1,106 +1,17 @@
-// import 'dart:html';
-
-import 'dart:io';
-
 import 'package:Decision_Tree_Generator/controllers/homeControllor.dart';
 import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/diagnostics.dart';
 import 'package:get/get.dart';
 
-class HomeView extends StatefulWidget {
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  String _fileName;
-  List<PlatformFile> _paths;
-  String _directoryPath;
-  String _extension;
-  bool _loadingPath = false;
-  bool _multiPick = false;
-  FileType _pickingType = FileType.any;
-  TextEditingController _controller = TextEditingController();
-  List<List<dynamic>> data;
-
-  void _openFileExplorer() async {
-    setState(() => _loadingPath = true);
-    try {
-      _directoryPath = null;
-      FilePickerResult res = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          onFileLoading: (c) {
-            print(c.index);
-            // return 45;
-          },
-          allowedExtensions: ['csv'],
-          withData: true);
-      _paths = res.files;
-      var fg = res.files[0].bytes;
-      print(String.fromCharCodes(fg));
-      // final file = await new File('${tempDir.path}/image.jpg').create();
-      // var ff = File(fg, 'helo.csv');
-
-      // cv.CsvToListConverter().convert(fgt);
-      // print(res.files[0].bytes);
-      // final myData = await rootBundle.loadString("assets/sales.csv");
-      // List<List<dynamic>> csvTable = CsvToListConverter().convert(csv);
-
-      // data = csvTable;
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
-    } catch (ex) {
-      print(ex);
-    }
-    if (!mounted) return;
-    setState(() {
-      _loadingPath = false;
-      _fileName = _paths != null ? _paths.map((e) => e.name).toString() : '...';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Decision Tree Generator'),
-        titleSpacing: 4,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              color: Colors.blueAccent,
-              child: Text(_fileName ?? 'nil'),
-            ),
-          ),
-          Container(
-            child: Column(
-              children: [
-                RaisedButton(
-                  onPressed: () => _openFileExplorer(),
-                  child: Text("Open file picker"),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
+class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 60,
-        title: Text(
+        title: const Text(
           'Decision Tree Generator',
           textScaleFactor: 1.5,
         ),
@@ -121,49 +32,47 @@ class Home extends StatelessWidget {
                         color: Colors.tealAccent,
                         height: 500,
                         width: double.maxFinite,
-                        margin: EdgeInsets.all(30.0),
+                        margin: const EdgeInsets.all(30.0),
                       ),
                       Container(
                         color: Colors.deepPurpleAccent,
                         height: 500,
                         width: double.maxFinite,
-                        margin: EdgeInsets.all(30.0),
+                        margin: const EdgeInsets.all(30.0),
                         child: Obx(
                           () {
-                            print(controller.data.isNullOrBlank
-                                ? 'l'
-                                : controller?.data[0]);
-                            return Text(
-                              controller.data.length.toString(),
+                            return SingleChildScrollView(
+                              child: !controller.cols.isNullOrBlank
+                                  ? DataTable(
+                                      columns: controller.cols
+                                          .map(
+                                            (e) => DataColumn(
+                                              label: Text(
+                                                e.toString(),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                      rows: controller.rows
+                                          .map(
+                                            (item) => DataRow(
+                                              cells: item
+                                                  .map(
+                                                    (e) => DataCell(
+                                                      Text(
+                                                        e.toString(),
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ),
+                                          )
+                                          .toList(),
+                                    )
+                                  : const SizedBox.shrink(),
                             );
                           },
                         ),
-                        // child: SingleChildScrollView(
-                        //   child: Table(
-                        //     columnWidths: {
-                        //       0: FixedColumnWidth(100.0),
-                        //       1: FixedColumnWidth(200.0),
-                        //     },
-                        //     border: TableBorder.all(width: 1.0),
-                        //     children: controller.data.map((item) {
-                        //       return TableRow(
-                        //           children: item.map((row) {
-                        //         return Container(
-                        //           color: row.toString().contains("NA")
-                        //               ? Colors.red
-                        //               : Colors.green,
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(8.0),
-                        //             child: Text(
-                        //               row.toString(),
-                        //               style: TextStyle(fontSize: 20.0),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       }).toList());
-                        //     }).toList(),
-                        //   ),
-                        // ),
                       ),
                     ],
                   ),
@@ -173,15 +82,14 @@ class Home extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         RaisedButton(
-                          child: Text('Tree'),
                           onPressed: () async {
                             updater(0);
-                            controller.openFileExplorer();
                           },
+                          child: const Text('Tree'),
                         ),
                         RaisedButton(
-                          child: Text('Table'),
                           onPressed: () => updater(1),
+                          child: const Text('Table'),
                         )
                       ],
                     ),
@@ -189,13 +97,71 @@ class Home extends StatelessWidget {
                 ],
               ),
               RaisedButton(
-                onPressed: () {},
-                child: Text('upload'),
+                onPressed: () {
+                  controller.openFileExplorer();
+                },
+                child: const Text('upload'),
               )
             ],
           );
         },
       ),
+    );
+  }
+}
+
+// import 'package:flutter/material.dart';
+// import 'package:csv/csv.dart';
+// import 'dart:async' show Future;
+// import 'package:flutter/services.dart' show rootBundle;
+
+class TableLayout extends StatefulWidget {
+  @override
+  _TableLayoutState createState() => _TableLayoutState();
+}
+
+class _TableLayoutState extends State<TableLayout> {
+  List<List<dynamic>> data = [];
+
+  Future<void> loadAsset() async {
+    final myData = await rootBundle.loadString("assets/baseball.csv");
+    final List<List<dynamic>> csvTable = const CsvToListConverter(
+      eol: "\n",
+    ).convert(myData);
+    data = csvTable;
+    print(data[0]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.refresh),
+          onPressed: () async {
+            await loadAsset();
+            // print(data[0][2]);
+            setState(() {});
+            print(data);
+          }),
+      appBar: AppBar(
+        title: Text("Table Layout and CSV"),
+      ),
+      body: SingleChildScrollView(
+          child: DataTable(
+        // columns:  data.map((e) => DataColumn(label: e)).toList(),
+        // ignore: prefer_const_literals_to_create_immutables
+        columns: [const DataColumn(label: Text("data"))],
+        rows: [
+          const DataRow(
+            cells: [
+              DataCell(
+                Text('vaydata'),
+              ),
+            ],
+          ),
+        ],
+      )),
     );
   }
 }
