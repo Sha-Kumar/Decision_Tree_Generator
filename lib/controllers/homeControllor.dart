@@ -6,14 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  RxList data = [].obs;
+  RxList cols = <dynamic>[].obs;
+  RxList<List<dynamic>> rows = <List<dynamic>>[].obs;
 
   Future<void> loadFile(String mydata) async {
     // final mydata = await rootBundle.loadString("assets/baseball.csv");
-    final List<List<dynamic>> csvTable =
-        const CsvToListConverter().convert(mydata);
-    data.value = csvTable;
-    // print(data[0]);
+    final List<List<dynamic>> csvTable = const CsvToListConverter(
+      eol: "\n",
+    ).convert(mydata);
+    cols.value = csvTable.first;
+    csvTable.removeAt(0);
+    rows.value = csvTable;
+    print(csvTable);
   }
 
   Future<void> openFileExplorer() async {
