@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  final RxInt indexValue = 0.obs;
+  int get index => indexValue.value;
+  set index(int v) => indexValue.value = v;
   RxList cols = <dynamic>[].obs;
   RxList<List<dynamic>> rows = <List<dynamic>>[].obs;
 

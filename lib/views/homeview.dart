@@ -1,7 +1,5 @@
 import 'package:Decision_Tree_Generator/controllers/homeControllor.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -9,6 +7,14 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          controller.openFileExplorer();
+        },
+        label: const Text('Upload'),
+        hoverElevation: 20.0,
+        icon: const Icon(Icons.upload_rounded),
+      ),
       appBar: AppBar(
         toolbarHeight: 60,
         title: const Text(
@@ -17,151 +23,95 @@ class HomeView extends StatelessWidget {
         ),
         toolbarOpacity: 0.8,
       ),
-      body: ValueBuilder<int>(
-        initialValue: 0,
-        builder: (value, updater) {
-          return ListView(
+      body: ListView(
+        children: [
+          Stack(
+            alignment: AlignmentDirectional.topCenter,
             children: [
-              Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  IndexedStack(
-                    index: value,
-                    children: [
-                      Container(
-                        color: Colors.tealAccent,
-                        height: 500,
-                        width: double.maxFinite,
-                        margin: const EdgeInsets.all(30.0),
-                      ),
-                      Container(
-                        color: Colors.deepPurpleAccent,
-                        height: 500,
-                        width: double.maxFinite,
-                        margin: const EdgeInsets.all(30.0),
-                        child: Obx(
-                          () {
-                            return SingleChildScrollView(
-                              child: !controller.cols.isNullOrBlank
-                                  ? DataTable(
-                                      columns: controller.cols
-                                          .map(
-                                            (e) => DataColumn(
-                                              label: Text(
-                                                e.toString(),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      rows: controller.rows
-                                          .map(
-                                            (item) => DataRow(
-                                              cells: item
-                                                  .map(
-                                                    (e) => DataCell(
-                                                      Text(
-                                                        e.toString(),
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            ),
-                                          )
-                                          .toList(),
-                                    )
-                                  : const SizedBox.shrink(),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    height: 100,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RaisedButton(
-                          onPressed: () async {
-                            updater(0);
-                          },
-                          child: const Text('Tree'),
-                        ),
-                        RaisedButton(
-                          onPressed: () => updater(1),
-                          child: const Text('Table'),
-                        )
-                      ],
+              Obx(
+                () => IndexedStack(
+                  index: controller.index,
+                  children: [
+                    Container(
+                      color: Colors.tealAccent,
+                      height: 500,
+                      width: double.maxFinite,
+                      margin: const EdgeInsets.all(30.0),
                     ),
-                  )
-                ],
+                    Container(
+                      color: Colors.deepPurpleAccent,
+                      height: 500,
+                      width: double.maxFinite,
+                      margin: const EdgeInsets.all(30.0),
+                      child: Obx(
+                        () {
+                          return SingleChildScrollView(
+                            child: !controller.cols.isNullOrBlank
+                                ? DataTable(
+                                    columns: controller.cols
+                                        .map(
+                                          (e) => DataColumn(
+                                            label: Text(
+                                              e.toString(),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    rows: controller.rows
+                                        .map(
+                                          (item) => DataRow(
+                                            cells: item
+                                                .map(
+                                                  (e) => DataCell(
+                                                    Text(
+                                                      e.toString(),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                        )
+                                        .toList(),
+                                  )
+                                : const SizedBox.shrink(),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              RaisedButton(
-                onPressed: () {
-                  controller.openFileExplorer();
-                },
-                child: const Text('upload'),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 9.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlineButton(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      shape: const StadiumBorder(),
+                      onPressed: () {
+                        controller.index = 0;
+                      },
+                      child: const Text('Tree'),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    OutlineButton(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      shape: const StadiumBorder(),
+                      onPressed: () {
+                        controller.index = 1;
+                      },
+                      child: const Text('Table'),
+                    )
+                  ],
+                ),
               )
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-// import 'package:flutter/material.dart';
-// import 'package:csv/csv.dart';
-// import 'dart:async' show Future;
-// import 'package:flutter/services.dart' show rootBundle;
-
-class TableLayout extends StatefulWidget {
-  @override
-  _TableLayoutState createState() => _TableLayoutState();
-}
-
-class _TableLayoutState extends State<TableLayout> {
-  List<List<dynamic>> data = [];
-
-  Future<void> loadAsset() async {
-    final myData = await rootBundle.loadString("assets/baseball.csv");
-    final List<List<dynamic>> csvTable = const CsvToListConverter(
-      eol: "\n",
-    ).convert(myData);
-    data = csvTable;
-    print(data[0]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.refresh),
-          onPressed: () async {
-            await loadAsset();
-            // print(data[0][2]);
-            setState(() {});
-            print(data);
-          }),
-      appBar: AppBar(
-        title: Text("Table Layout and CSV"),
-      ),
-      body: SingleChildScrollView(
-          child: DataTable(
-        // columns:  data.map((e) => DataColumn(label: e)).toList(),
-        // ignore: prefer_const_literals_to_create_immutables
-        columns: [const DataColumn(label: Text("data"))],
-        rows: [
-          const DataRow(
-            cells: [
-              DataCell(
-                Text('vaydata'),
-              ),
             ],
           ),
         ],
-      )),
+      ),
     );
   }
 }
