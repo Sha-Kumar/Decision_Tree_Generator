@@ -44,42 +44,40 @@ class HomeView extends StatelessWidget {
                       width: double.maxFinite,
                       margin: const EdgeInsets.all(30.0),
                       child: Obx(
-                        () {
-                          return SingleChildScrollView(
-                            child: !controller.cols.isNullOrBlank
-                                ? Column(
-                                    children: [
-                                      DataTable(
-                                        columns: controller.cols
-                                            .map(
-                                              (e) => DataColumn(
-                                                label: Text(
-                                                  e.toString(),
-                                                ),
+                        () => SingleChildScrollView(
+                          child: !controller.cols.isNullOrBlank
+                              ? Column(
+                                  children: [
+                                    DataTable(
+                                      columns: controller.cols
+                                          .map(
+                                            (e) => DataColumn(
+                                              label: Text(
+                                                e.toString(),
                                               ),
-                                            )
-                                            .toList(),
-                                        rows: controller.rows
-                                            .map(
-                                              (item) => DataRow(
-                                                cells: item
-                                                    .map(
-                                                      (e) => DataCell(
-                                                        Text(
-                                                          e.toString(),
-                                                        ),
+                                            ),
+                                          )
+                                          .toList(),
+                                      rows: controller.rows
+                                          .map(
+                                            (item) => DataRow(
+                                              cells: item
+                                                  .map(
+                                                    (e) => DataCell(
+                                                      Text(
+                                                        e.toString(),
                                                       ),
-                                                    )
-                                                    .toList(),
-                                              ),
-                                            )
-                                            .toList(),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox.shrink(),
-                          );
-                        },
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ),
                     ),
                   ],
@@ -107,7 +105,7 @@ class HomeView extends StatelessWidget {
                       onPressed: () {
                         controller.index = 1;
                       },
-                      child: const Text('Table'),
+                      child: const Text('Data Table'),
                     )
                   ],
                 ),

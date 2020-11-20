@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -45,7 +44,7 @@ class HomeController extends GetxController {
           allowedExtensions: ['csv'],
           withData: true);
       final fg = res.files[0].bytes;
-      compute(loadFile, utf8.decode(fg));
+      await compute(loadFile, utf8.decode(fg));
     } on PlatformException catch (e) {
       print("Unsupported operation$e");
     } catch (ex) {
