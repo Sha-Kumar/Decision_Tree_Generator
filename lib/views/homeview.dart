@@ -9,7 +9,6 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          controller.start.value = 0;
           controller.openFileExplorer();
         },
         label: const Text('Upload'),
@@ -47,7 +46,6 @@ class HomeView extends StatelessWidget {
                       child: Obx(
                         () {
                           return SingleChildScrollView(
-                            controller: controller.scrollController,
                             child: !controller.cols.isNullOrBlank
                                 ? Column(
                                     children: [
