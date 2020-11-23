@@ -45,7 +45,7 @@ List subtables(List<List<String>> data, int col, {bool delete = false}) {
     colData.add(e[col]);
   }
   final List attr = colData.toSet().toList();
-  final List counts = List.generate(attr.length, (e) => 0);
+  final List counts = List.filled(attr.length, 0);
   final int r = data.length, c = data[0].length;
   for (int x = 0; x < attr.length; x++) {
     for (int y = 0; y < r; y++) {
@@ -56,7 +56,7 @@ List subtables(List<List<String>> data, int col, {bool delete = false}) {
   }
   for (int x = 0; x < attr.length; x++) {
     counts[x].forEach((e) {
-      map[attr[x]] = List.generate(c, (e) => 0);
+      map[attr[x]] = List.filled(c, 0);
     });
     int pos = 0;
     for (int y = 0; y < r; y++) {
@@ -70,6 +70,31 @@ List subtables(List<List<String>> data, int col, {bool delete = false}) {
     }
   }
   return [attr, map];
+}
+
+double computeGain(List<List<String>> data, int col) {
+  final List list = subtables(data, col);
+  final List attr = list[0] as List;
+  final Map map = list[1] as Map;
+  final int totalSize = data.length;
+  final List<double> entropies = List.filled(attr.length, 0.0);
+  final List<double> ratio = List.filled(attr.length, 0.0);
+  final List lastCols = [];
+  for (final i in data) {
+    lastCols.add(i.last);
+  }
+  double totalEntropy = entropy(lastCols);
+  for (int x; x < attr.length; x++) {
+    ratio[x] = (map[attr[x]].length as int) / (totalSize * 1.0);
+    lastCols.clear();
+    for (final i in map[attr[x]]) {
+      lastCols.add(i.last);
+    }
+    entropies[x] = entropy(lastCols);
+    totalEntropy = totalEntropy - ratio[x] * entropies[x];
+  }
+
+  return totalEntropy;
 }
 
 /*
