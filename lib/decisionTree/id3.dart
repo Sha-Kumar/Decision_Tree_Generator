@@ -2,7 +2,7 @@ import 'dart:math';
 
 class Node {
   String attribute;
-  List children;
+  List<Pair> children;
   String answer;
   Node(
     this.attribute,
@@ -97,6 +97,22 @@ double computeGain(List<List<String>> data, int col) {
   return totalEntropy;
 }
 
+void printTree(Node node, int level) {
+  if (node.answer.isNotEmpty) {
+    final List<String> l = List.filled(level, "  ");
+    print(l.join() + node.answer);
+    return;
+  }
+  List<String> l = List.filled(level, "  ");
+  print(l.join() + node.attribute);
+  l.clear();
+  for (final Pair val in node.children) {
+    l = List.filled(level + 1, "  ");
+    print(l.join() + val.val);
+    printTree(val.node, level + 2);
+  }
+}
+
 /*
 def subtables(data,col,delete):
     dic={}
@@ -186,3 +202,9 @@ class Node:
       
     
 */
+class Pair {
+  final String val;
+  final Node node;
+
+  Pair(this.val, this.node);
+}
