@@ -2,7 +2,7 @@ import 'dart:math';
 
 class Node {
   String attribute;
-  List children;
+  List<Pair> children;
   String answer;
   Node(
     this.attribute,
@@ -11,31 +11,105 @@ class Node {
   );
 }
 
-class GainCalculator {
-  //log calculation.
-  double logBase(num x, num base) => log(x) / log(base);
+//log calculation.
+double logBase(num x, num base) => log(x) / log(base);
 
-  //calculating the entropy of the target attribute of the main/sub table.
-  double entropy(List data) {
-    final List attribute = data.toSet().toList();
-    List<double> counts = List.filled(attribute.length, 0);
-    double sum = 0;
+//calculating the entropy of the target attribute of the main/sub table.
+double entropy(List data) {
+  final List attribute = data.toSet().toList();
+  final List<double> counts = List.filled(attribute.length, 0);
+  double sum = 0;
 
-    if (attribute.isEmpty) {
-      return 0;
-    }
-    for (var i = 0; i < attribute.length; i++) {
-      for (var item in data) {
-        if (attribute[i] == item) {
-          counts[i]++;
-        }
+  if (attribute.isEmpty) {
+    return 0;
+  }
+  for (var i = 0; i < attribute.length; i++) {
+    for (final item in data) {
+      if (attribute[i] == item) {
+        counts[i]++;
       }
-      counts[i] = counts[i] / data.length;
     }
-    for (double item in counts) {
-      sum += -1 * item * logBase(item, 2);
+    counts[i] = counts[i] / data.length;
+  }
+  for (final double item in counts) {
+    sum += -1 * item * logBase(item, 2);
+  }
+  return sum;
+}
+
+List subtables(List<List<String>> data, int col, {bool delete = false}) {
+  final Map map = {};
+  final List colData = [];
+  // data.forEach((e) => colData.add(e[col]));
+  for (final e in data) {
+    colData.add(e[col]);
+  }
+  final List attr = colData.toSet().toList();
+  final List counts = List.filled(attr.length, 0);
+  final int r = data.length, c = data[0].length;
+  for (int x = 0; x < attr.length; x++) {
+    for (int y = 0; y < r; y++) {
+      if (data[y][col] == attr[x]) {
+        counts[x]++;
+      }
     }
-    return sum;
+  }
+  for (int x = 0; x < attr.length; x++) {
+    counts[x].forEach((e) {
+      map[attr[x]] = List.filled(c, 0);
+    });
+    int pos = 0;
+    for (int y = 0; y < r; y++) {
+      if (data[y][col] == attr[x]) {
+        if (delete) {
+          data.elementAt(y).removeAt(col);
+        }
+        map[attr[x]][pos] = data[y];
+        pos++;
+      }
+    }
+  }
+  return [attr, map];
+}
+
+double computeGain(List<List<String>> data, int col) {
+  final List list = subtables(data, col);
+  final List attr = list[0] as List;
+  final Map map = list[1] as Map;
+  final int totalSize = data.length;
+  final List<double> entropies = List.filled(attr.length, 0.0);
+  final List<double> ratio = List.filled(attr.length, 0.0);
+  final List lastCols = [];
+  for (final i in data) {
+    lastCols.add(i.last);
+  }
+  double totalEntropy = entropy(lastCols);
+  for (int x; x < attr.length; x++) {
+    ratio[x] = (map[attr[x]].length as int) / (totalSize * 1.0);
+    lastCols.clear();
+    for (final i in map[attr[x]]) {
+      lastCols.add(i.last);
+    }
+    entropies[x] = entropy(lastCols);
+    totalEntropy = totalEntropy - ratio[x] * entropies[x];
+  }
+
+  return totalEntropy;
+}
+
+void printTree(Node node, int level) {
+  if (node.answer.isNotEmpty) {
+    final List<String> l = List.filled(level, "  ");
+    print(l.join() + node.answer);
+    return;
+  }
+  List<String> l = List.filled(level, "  ");
+  print(l.join() + node.attribute);
+  l.clear();
+  for (final Pair val in node.children) {
+    l = List.filled(level + 1, "  ");
+    print(l.join() + val.val);
+    printTree(val.node, level + 2);
   }
 }
 
@@ -128,3 +202,9 @@ class Node:
       
     
 */
+class Pair {
+  final String val;
+  final Node node;
+
+  Pair(this.val, this.node);
+}
