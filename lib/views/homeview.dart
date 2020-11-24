@@ -1,4 +1,5 @@
 import 'package:Decision_Tree_Generator/controllers/homeControllor.dart';
+import 'package:Decision_Tree_Generator/decisionTree/id3.dart' as n;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +10,11 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          controller.openFileExplorer();
+          controller.loadFile();
+          // List<List<String>> rr = ;
+          final n.Node node = n.buildTree(controller.rows as List<List<String>>,
+              controller.headers as List<String>);
+          n.printTree(node, 0);
         },
         label: const Text('Upload'),
         hoverElevation: 20.0,
@@ -45,11 +50,11 @@ class HomeView extends StatelessWidget {
                       margin: const EdgeInsets.all(30.0),
                       child: Obx(
                         () => SingleChildScrollView(
-                          child: !controller.cols.isNullOrBlank
+                          child: !controller.headers.isNullOrBlank
                               ? Column(
                                   children: [
                                     DataTable(
-                                      columns: controller.cols
+                                      columns: controller.headers
                                           .map(
                                             (e) => DataColumn(
                                               label: Text(

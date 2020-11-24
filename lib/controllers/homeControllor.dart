@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -12,26 +10,33 @@ class HomeController extends GetxController {
   set index(int v) => indexValue.value = v;
 
   final RxBool isMoreAvailable = true.obs;
-  RxList cols = <dynamic>[].obs;
+  RxList<dynamic> headers = <dynamic>[].obs;
   RxList<List<dynamic>> rows = <List<dynamic>>[].obs;
 
   // @override
   // void onInit() {
-
   //   super.onInit();
   // }
 
-  Future<void> loadFile(String mydata) async {
-    // final mydata = await rootBundle.loadString("assets/baseball.csv");
-    cols.clear();
+  void getFileForAlgorithm() {}
+
+  Node node;
+
+  Future<void> loadFile({String mydata}) async {
+    final mydata = await rootBundle.loadString("assets/baseball.csv");
+    headers.clear();
     rows.clear();
-    final List<List<dynamic>> csvTable = const CsvToListConverter(
+    final List<List> csvTable = const CsvToListConverter(
       eol: "\n",
     ).convert(mydata);
-    cols.assignAll(csvTable.first);
+
+    headers.assignAll(csvTable.first);
     csvTable.removeAt(0);
     rows.addAll(csvTable);
-    print(csvTable);
+    // print("here new one");
+    // print(headers);
+    // print("here plase cross");
+    // print(rows);
   }
 
   Future<void> openFileExplorer() async {
@@ -44,7 +49,7 @@ class HomeController extends GetxController {
           allowedExtensions: ['csv'],
           withData: true);
       final fg = res.files[0].bytes;
-      await compute(loadFile, utf8.decode(fg));
+      // await compute(loadFile, utf8.decode(fg));
     } on PlatformException catch (e) {
       print("Unsupported operation$e");
     } catch (ex) {

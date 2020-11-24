@@ -131,7 +131,7 @@ Node buildTree(List<List<String>> data, List<String> features) {
   final double splitValue = gains.fold(0, max);
   final splitIndex = gains.indexOf(splitValue);
   final Node node = Node(features[splitIndex]);
-  List<String> fea = List.of(
+  final List<String> fea = List.of(
     features.getRange(0, splitIndex - 1),
   )..addAll(
       features.getRange(splitIndex + 1, features.length),
