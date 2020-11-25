@@ -5,10 +5,10 @@ class Node {
   List<Pair> children;
   String answer;
   Node(
-    this.attribute,
+    this.attribute, {
     this.children,
     this.answer,
-  );
+  });
 }
 
 //log calculation.
@@ -72,6 +72,14 @@ List subtables(List<List<String>> data, int col, {bool delete = false}) {
   return [attr, map];
 }
 
+List lastColumn(List data) {
+  final List lastCols = [];
+  for (final i in data) {
+    lastCols.add(i.last);
+  }
+  return lastCols;
+}
+
 double computeGain(List<List<String>> data, int col) {
   final List list = subtables(data, col);
   final List attr = list[0] as List;
@@ -79,17 +87,12 @@ double computeGain(List<List<String>> data, int col) {
   final int totalSize = data.length;
   final List<double> entropies = List.filled(attr.length, 0.0);
   final List<double> ratio = List.filled(attr.length, 0.0);
-  final List lastCols = [];
-  for (final i in data) {
-    lastCols.add(i.last);
-  }
+  List lastCols = lastColumn(data);
   double totalEntropy = entropy(lastCols);
   for (int x; x < attr.length; x++) {
     ratio[x] = (map[attr[x]].length as int) / (totalSize * 1.0);
     lastCols.clear();
-    for (final i in map[attr[x]]) {
-      lastCols.add(i.last);
-    }
+    lastCols = lastColumn(map[attr[x]] as List);
     entropies[x] = entropy(lastCols);
     totalEntropy = totalEntropy - ratio[x] * entropies[x];
   }
@@ -112,6 +115,40 @@ void printTree(Node node, int level) {
     printTree(val.node, level + 2);
   }
 }
+
+Node buildTree(List<List<String>> data, List<String> features) {
+  final List lastCol = lastColumn(data);
+  if (lastCol.toSet().length == 1) {
+    final Node node = Node('');
+    node.answer = lastCol.first as String;
+    return node;
+  }
+  final int n = data.first.length - 1;
+  final List<double> gains = List.filled(n, 0.0);
+  for (var i = 0; i < n; i++) {
+    gains[i] = computeGain(data, i);
+  }
+  final double splitValue = gains.fold(0, max);
+  final splitIndex = gains.indexOf(splitValue);
+  final Node node = Node(features[splitIndex]);
+  final List<String> fea = List.of(
+    features.getRange(0, splitIndex - 1),
+  )..addAll(
+      features.getRange(splitIndex + 1, features.length),
+    );
+  final List list = subtables(data, splitIndex, delete: true);
+  final List attr = list[0] as List;
+  final Map map = list[1] as Map;
+  for (var i = 0; i < attr.length; i++) {
+    final Node child = buildTree(map[attr[i]] as List<List<String>>, fea);
+    node.children.add(Pair(attr[i] as String, child));
+  }
+  return node;
+}
+
+void classify(
+  Node node,
+) {}
 
 /*
 def subtables(data,col,delete):
