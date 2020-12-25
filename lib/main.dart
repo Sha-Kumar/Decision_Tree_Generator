@@ -60,8 +60,8 @@ class HomeView extends StatelessWidget {
         children: [
           RaisedButton(
             onPressed: () {
-              print(subtables(controller.aRows, 2));
-              // buildTree(controller.aRows, controller.aHeaders);
+              // print(subtables(controller.aRows, 1));
+              buildTree(controller.aRows, controller.aHeaders);
             },
             child: const Text('hell'),
           )
@@ -222,10 +222,8 @@ ReturnSubTables subtables(List<List<String>> data, int col,
   }
 
   for (int x = 0; x < attr.length; x++) {
-    map[attr[x]] = List.filled(
-      c,
-      List.filled(c, ''),
-    );
+    map[attr[x]] = List.filled(counts[x], List.filled(c, '', growable: true),
+        growable: true);
     int pos = 0;
     for (int y = 0; y < r; y++) {
       if (data[y][col] == attr[x]) {
@@ -237,7 +235,7 @@ ReturnSubTables subtables(List<List<String>> data, int col,
       }
     }
   }
-  return ReturnSubTables([], map);
+  return ReturnSubTables(attr, map);
 }
 
 class ReturnSubTables {
@@ -300,11 +298,11 @@ Node buildTree(List<List<String>> data, List<String> features) {
   for (var i = 0; i < n; i++) {
     gains[i] = computeGain(data, i);
   }
-  final double splitValue = gains.fold(0, max);
+  final double splitValue = gains.fold(gains.first, max);
   final splitIndex = gains.indexOf(splitValue);
   final Node node = Node(features[splitIndex]);
   final List<String> fea = List.of(
-    features.getRange(0, splitIndex - 1),
+    features.getRange(0, splitIndex),
   )..addAll(
       features.getRange(splitIndex + 1, features.length),
     );
@@ -312,6 +310,7 @@ Node buildTree(List<List<String>> data, List<String> features) {
       subtables(data, splitIndex, delete: true);
   final List<String> attr = returnSubTables.attr;
   final Map<String, List<List<String>>> map = returnSubTables.map;
+  print(map);
   for (var i = 0; i < attr.length; i++) {
     final Node child = buildTree(map[attr[i]], fea);
     node.children.add(
