@@ -1,7 +1,6 @@
-import 'package:Decision_Tree_Generator/controllers/homeControllor.dart';
-import 'package:Decision_Tree_Generator/decisionTree/id3.dart' as n;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../main.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
@@ -12,9 +11,9 @@ class HomeView extends StatelessWidget {
         onPressed: () {
           controller.loadFile();
           // List<List<String>> rr = ;
-          final n.Node node = n.buildTree(controller.rows as List<List<String>>,
-              controller.headers as List<String>);
-          n.printTree(node, 0);
+          // final n.Node node = n.buildTree(controller.rows as List<List<String>>,
+          // controller.headers as List<String>);
+          // n.printTree(node, 0);
         },
         label: const Text('Upload'),
         hoverElevation: 20.0,
@@ -28,97 +27,97 @@ class HomeView extends StatelessWidget {
         ),
         toolbarOpacity: 0.8,
       ),
-      body: ListView(
-        children: [
-          Stack(
-            alignment: AlignmentDirectional.topCenter,
-            children: [
-              Obx(
-                () => IndexedStack(
-                  index: controller.index,
-                  children: [
-                    Container(
-                      color: Colors.tealAccent,
-                      height: 500,
-                      width: double.maxFinite,
-                      margin: const EdgeInsets.all(30.0),
-                    ),
-                    Container(
-                      color: Colors.deepPurpleAccent,
-                      height: 500,
-                      width: double.maxFinite,
-                      margin: const EdgeInsets.all(30.0),
-                      child: Obx(
-                        () => SingleChildScrollView(
-                          child: !controller.headers.isNullOrBlank
-                              ? Column(
-                                  children: [
-                                    DataTable(
-                                      columns: controller.headers
-                                          .map(
-                                            (e) => DataColumn(
-                                              label: Text(
-                                                e.toString(),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      rows: controller.rows
-                                          .map(
-                                            (item) => DataRow(
-                                              cells: item
-                                                  .map(
-                                                    (e) => DataCell(
-                                                      Text(
-                                                        e.toString(),
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 9.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    OutlineButton(
-                      borderSide: const BorderSide(color: Colors.blue),
-                      shape: const StadiumBorder(),
-                      onPressed: () {
-                        controller.index = 0;
-                      },
-                      child: const Text('Tree'),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    OutlineButton(
-                      borderSide: const BorderSide(color: Colors.blue),
-                      shape: const StadiumBorder(),
-                      onPressed: () {
-                        controller.index = 1;
-                      },
-                      child: const Text('Data Table'),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
+      // body: ListView(
+      //   children: [
+      //     Stack(
+      //       alignment: AlignmentDirectional.topCenter,
+      //       children: [
+      //         Obx(
+      //           () => IndexedStack(
+      //             index: controller.index,
+      //             children: [
+      //               Container(
+      //                 color: Colors.tealAccent,
+      //                 height: 500,
+      //                 width: double.maxFinite,
+      //                 margin: const EdgeInsets.all(30.0),
+      //               ),
+      //               Container(
+      //                 color: Colors.deepPurpleAccent,
+      //                 height: 500,
+      //                 width: double.maxFinite,
+      //                 margin: const EdgeInsets.all(30.0),
+      //                 child: Obx(
+      //                   () => SingleChildScrollView(
+      //                     child: !controller.headers.isNullOrBlank
+      //                         ? Column(
+      //                             children: [
+      //                               DataTable(
+      //                                 columns: controller.headers
+      //                                     .map(
+      //                                       (e) => DataColumn(
+      //                                         label: Text(
+      //                                           e.toString(),
+      //                                         ),
+      //                                       ),
+      //                                     )
+      //                                     .toList(),
+      //                                 rows: controller.rows
+      //                                     .map(
+      //                                       (item) => DataRow(
+      //                                         cells: item
+      //                                             .map(
+      //                                               (e) => DataCell(
+      //                                                 Text(
+      //                                                   e.toString(),
+      //                                                 ),
+      //                                               ),
+      //                                             )
+      //                                             .toList(),
+      //                                       ),
+      //                                     )
+      //                                     .toList(),
+      //                               ),
+      //                             ],
+      //                           )
+      //                         : const SizedBox.shrink(),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //         Padding(
+      //           padding: const EdgeInsets.only(bottom: 9.0),
+      //           child: Row(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               OutlineButton(
+      //                 borderSide: const BorderSide(color: Colors.blue),
+      //                 shape: const StadiumBorder(),
+      //                 onPressed: () {
+      //                   controller.index = 0;
+      //                 },
+      //                 child: const Text('Tree'),
+      //               ),
+      //               const SizedBox(
+      //                 width: 5,
+      //               ),
+      //               OutlineButton(
+      //                 borderSide: const BorderSide(color: Colors.blue),
+      //                 shape: const StadiumBorder(),
+      //                 onPressed: () {
+      //                   controller.index = 1;
+      //                 },
+      //                 child: const Text('Data Table'),
+      //               )
+      //             ],
+      //           ),
+      //         )
+      //       ],
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
