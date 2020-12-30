@@ -18,6 +18,44 @@ Decision trees are commonly used in operations research and operations managemen
 
 Decision trees, influence diagrams, utility functions, and other decision analysis tools and methods are taught to undergraduate students in schools of business, health economics, and public health, and are examples of operations research or management science methods.
 
+## Getting Started
+
+### Dependencies
+
+- flutter SDK with web-wnabled( To enable the web app development in flutter SDK  [  ```Click Here```  ](https://flutter.dev/docs/get-started/web) .)
+- Android Studio
+- VS Code/Sublime Text(Any Editor) 
+
+# Installing
+
+```
+flutter pub get
+```
+
+### For upgrading the packages. (Only necassary if version conflict in packages)
+```
+flutter pub upgrade
+```
+
+# Usage
+
+### For Debugging in chrome
+
+```
+flutter run -d chrome
+```
+### For running without Debug
+
+```
+flutter run
+```
+
+
+## Version History
+
+- 1.0
+
+
 
 ## Feedback
 
