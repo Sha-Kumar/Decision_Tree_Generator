@@ -23,7 +23,7 @@ Decision trees, influence diagrams, utility functions, and other decision analys
 ### Dependencies
 
 - flutter SDK with web-wnabled( To enable the web app development in flutter SDK  [  ```Click Here```  ](https://flutter.dev/docs/get-started/web) )
-- Android Studio
+- Android Studio(The latest non-conflicting version)
 - VS Code/Sublime Text(Any Editor) 
 
 # Installing
@@ -53,7 +53,7 @@ flutter run
 
 ## Version History
 
-- 1.0
+- 1.0.0
 
 
 
