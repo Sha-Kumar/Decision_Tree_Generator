@@ -2,7 +2,7 @@
 
 ## 🙏🏻 Welcome to Decision Tree Generator!
 
-A website to generate your decision tree's developed using flutter, just upload the dataset then download your tree in desired format.
+A website to generate your decision tree's developed using flutter, just upload the dataset then download your tree in desired format. And also we can classify the New Instance based on the Naive-Baysean classifier to for the given dataset/decision-tree based on probabilistic methods.
 
 ## Introduction to Decision Tree
 A decision tree is a flowchart-like structure in which each internal node represents a "test" on an attribute (e.g. whether a coin flip comes up heads or tails), each branch represents the outcome of the test, and each leaf node represents a class label (decision taken after computing all attributes). The paths from root to leaf represent classification rules.
@@ -24,7 +24,7 @@ Decision trees, influence diagrams, utility functions, and other decision analys
 
 - flutter SDK with web-wnabled( To enable the web app development in flutter SDK  [  ```Click Here```  ](https://flutter.dev/docs/get-started/web) )
 - Android Studio(The latest non-conflicting version)
-- VS Code/Sublime Text(Any Editor) 
+- VS Code/Sublime Text(or Any Editor) 
 
 # Installing
 
@@ -60,7 +60,6 @@ flutter run
 ## Feedback
 
 - If you think this repo is useful, consider giving it a star.
-- If something is not working, [create an
-  issue](https://github.com/Sha-Kumar/Decision_Tree_Generator/issues/new).
+- If something is not working, [create an issue](https://github.com/Sha-Kumar/Decision_Tree_Generator/issues/new).
 
 ### Created & Maintained By [rustiever](https://github.com/rustiever) and [Sha-Kumar](https://github.com/Sha-Kumar)
