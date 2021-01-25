@@ -1,4 +1,4 @@
-# 💪🏻👨🏻‍💻 Actively under development 💻🕵🏻‍♂️
+# 💪🏻👨🏻‍💻 Still under development 💻🕵🏻‍♂️
 
 ## 🙏🏻 Welcome to Decision Tree Generator!
 
